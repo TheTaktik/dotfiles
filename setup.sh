@@ -101,6 +101,19 @@ setup_i3_config()
   link_config $I3CONFIG_SRC $I3CONFIG
 }
 
+setup_clangformat_config()
+{
+  echo "Setting up clang-format"
+  local CLANG_FORMAT_CONFIG=$HOME/".clang-format"
+  local CLANG_FORMAT_CONFIG_SRC=$SCRIPTDIR/".clang-format"
+  if ! find_command clang-format
+  then
+    echo " Aborting!"
+    return 1
+  fi
+  link_config $CLANG_FORMAT_CONFIG_SRC $CLANG_FORMAT_CONFIG
+}
+
 echo "Starting setup"
 
 if [ ! -f $SCRIPTPATH ]
@@ -129,4 +142,5 @@ mkdir -p $BACKUP_DIR
 setup_zsh_config
 setup_vim_config
 setup_i3_config
+setup_clangformat_config
 exit 0
