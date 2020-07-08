@@ -117,13 +117,14 @@ then
   exit 1
 fi
 
-if [ ! -z "$1" ] && [ $1 = "force" ]
+if [ $# -ge 1 ] && [ $1 = "force" ]
 then
   FORCE=1
-  BACKUP_DIR=$HOME/".tt_setup_backup"
-  echo "Creating backup dir $BACKUP_DIR"
-  mkdir -p $BACKUP_DIR
 fi
+
+BACKUP_DIR=$HOME/".tt_setup_backup"
+echo "Creating backup dir $BACKUP_DIR"
+mkdir -p $BACKUP_DIR
 
 setup_zsh_config
 setup_vim_config
