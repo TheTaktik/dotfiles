@@ -8,6 +8,8 @@ set -ue
 SCRIPTDIR="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 SCRIPTPATH=$SCRIPTDIR/"setup.sh"
 
+FORCE=0
+
 LAST_FOUND_CMD=""
 find_command()
 {
@@ -32,8 +34,13 @@ setup_zsh_config()
   if [ -f $ZSHRC -o -f $ZSHENV ]
   then
     echo " Found existing zsh config."
-    echo " Skipping."
-    return 0
+    if [ $FORCE -eq 0 ]
+    then
+      echo " Skipping."
+      return 0
+    else
+      echo " Continuing anyway"
+    fi
   fi
 
   if ! find_command zsh
@@ -52,6 +59,7 @@ setup_zsh_config()
     return 1
   fi
 
+  echo " Linking .zshrc and .zshenv"
   ln -sf $ZSHRC_SRC $ZSHRC
   ln -sf $ZSHENV_SRC $ZSHENV
 }
@@ -64,8 +72,13 @@ setup_vim_config()
   if [ -f $VIMRC ]
   then
     echo " Found existing vim config."
-    echo " Skipping."
-    return 0
+    if [ $FORCE -eq 0 ]
+    then
+      echo " Skipping."
+      return 0
+    else
+      echo " Continuing anyway"
+    fi
   fi
 
   if ! find_command nvim
@@ -87,6 +100,7 @@ setup_vim_config()
     return 1
   fi
 
+  echo " Linking .vimrc"
   ln -sf $VIMRC_SRC $VIMRC
 }
 
@@ -98,8 +112,13 @@ setup_i3_config()
   if [ -f $I3CONFIG ]
   then
     echo " Found existing i3 config."
-    echo " Skipping."
-    return 0
+    if [ $FORCE -eq 0 ]
+    then
+      echo " Skipping."
+      return 0
+    else
+      echo " Continuing anyway"
+    fi
   fi
 
   if ! find_command i3
@@ -117,6 +136,7 @@ setup_i3_config()
     return 1
   fi
 
+  echo " Linking .config/i3/config"
   ln -sf $I3CONFIG_SRC $I3CONFIG
 }
 
@@ -134,6 +154,11 @@ then
   echo "\$HOME does not point to a existing directory"
   echo "Aborting!"
   exit 1
+fi
+
+if [ ! -z "$1" ] && [ $1 = "force" ]
+then
+  FORCE=1
 fi
 
 setup_zsh_config
