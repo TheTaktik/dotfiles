@@ -114,6 +114,19 @@ setup_clangformat_config()
   link_config $CLANG_FORMAT_CONFIG_SRC $CLANG_FORMAT_CONFIG
 }
 
+setup_urxvt_config()
+{
+  echo "Setting up urxvt"
+  local DEST=$HOME/".Xdefaults"
+  local SRC=$SCRIPTDIR/".Xdefaults"
+  if ! find_command urxvt
+  then
+    echo " Aborting!"
+    return 1
+  fi
+  link_config $SRC $DEST
+}
+
 echo "Starting setup"
 
 if [ ! -f $SCRIPTPATH ]
@@ -143,4 +156,5 @@ setup_zsh_config
 setup_vim_config
 setup_i3_config
 setup_clangformat_config
+setup_urxvt_config
 exit 0
