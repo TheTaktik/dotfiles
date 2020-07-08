@@ -1,0 +1,6 @@
+VISUAL='nvim'
+EDITOR='nvim'
+PATH=$PATH:~/bin
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/lib
+C_INCLUDE_PATH=~/include
+CPLUS_INCLUDE_PATH=~/include
