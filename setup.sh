@@ -25,62 +25,57 @@ find_command()
   fi
 }
 
-setup_zsh_config()
+link_config()
 {
-  echo "Setting up zsh"
-  local ZSHRC=$HOME/".zshrc"
-  local ZSHENV=$HOME/".zshenv" 
+  local SRC=$1
+  local DEST=$2
 
-  if [ -f $ZSHRC -o -f $ZSHENV ]
+  if [ -f $DEST ]
   then
-    echo " Found existing zsh config."
+    echo " Found existing $DEST."
     if [ $FORCE -eq 0 ]
     then
       echo " Skipping."
       return 0
     else
-      echo " Continuing anyway"
+      local BACKUP=$BACKUP_DIR/"$(basename $DEST)"
+      echo " Creating backup $BACKUP"
+      cp $DEST $BACKUP
     fi
   fi
 
+  if ! [ -f $SRC ]
+  then
+    echo " Install file $SRC not found"
+    echo " Aborting."
+    return 1
+  fi
+
+  echo " Linking $DEST"
+  ln -sf $SRC $DEST
+}
+
+setup_zsh_config()
+{
+  echo "Setting up zsh"
+  local ZSHRC=$HOME/".zshrc"
+  local ZSHENV=$HOME/".zshenv" 
+  local ZSHRC_SRC=$SCRIPTDIR/".zshrc"
+  local ZSHENV_SRC=$SCRIPTDIR/".zshenv" 
   if ! find_command zsh
   then
     echo " Aborting!"
     return 1
   fi
-
-  local ZSHRC_SRC=$SCRIPTDIR/".zshrc"
-  local ZSHENV_SRC=$SCRIPTDIR/".zshenv" 
-
-  if ! [ -f $ZSHRC_SRC -a -f $ZSHENV_SRC ]
-  then
-    echo " Install files not found"
-    echo " Aborting."
-    return 1
-  fi
-
-  echo " Linking .zshrc and .zshenv"
-  ln -sf $ZSHRC_SRC $ZSHRC
-  ln -sf $ZSHENV_SRC $ZSHENV
+  link_config $ZSHRC_SRC $ZSHRC
+  link_config $ZSHENV_SRC $ZSHENV
 }
 
 setup_vim_config()
 {
   echo "Setting up vim"
   local VIMRC=$HOME/".vimrc"
-
-  if [ -f $VIMRC ]
-  then
-    echo " Found existing vim config."
-    if [ $FORCE -eq 0 ]
-    then
-      echo " Skipping."
-      return 0
-    else
-      echo " Continuing anyway"
-    fi
-  fi
-
+  local VIMRC_SRC=$SCRIPTDIR/".vimrc"
   if ! find_command nvim
   then
     echo " Trying vim"
@@ -90,54 +85,20 @@ setup_vim_config()
       return 1
     fi
   fi
-
-  local VIMRC_SRC=$SCRIPTDIR/".vimrc"
-
-  if ! [ -f $VIMRC_SRC ]
-  then
-    echo " Install files not found"
-    echo " Aborting."
-    return 1
-  fi
-
-  echo " Linking .vimrc"
-  ln -sf $VIMRC_SRC $VIMRC
+  link_config $VIMRC_SRC $VIMRC
 }
 
 setup_i3_config()
 {
   echo "Setting up i3"
   local I3CONFIG=$HOME/".config/i3/config"
-
-  if [ -f $I3CONFIG ]
-  then
-    echo " Found existing i3 config."
-    if [ $FORCE -eq 0 ]
-    then
-      echo " Skipping."
-      return 0
-    else
-      echo " Continuing anyway"
-    fi
-  fi
-
+  local I3CONFIG_SRC=$SCRIPTDIR/"i3config"
   if ! find_command i3
   then
     echo " Aborting!"
     return 1
   fi
-
-  local I3CONFIG_SRC=$SCRIPTDIR/"i3config"
-
-  if ! [ -f $I3CONFIG_SRC ]
-  then
-    echo " Install files not found"
-    echo " Aborting."
-    return 1
-  fi
-
-  echo " Linking .config/i3/config"
-  ln -sf $I3CONFIG_SRC $I3CONFIG
+  link_config $I3CONFIG_SRC $I3CONFIG
 }
 
 echo "Starting setup"
@@ -159,6 +120,9 @@ fi
 if [ ! -z "$1" ] && [ $1 = "force" ]
 then
   FORCE=1
+  BACKUP_DIR=$HOME/".tt_setup_backup"
+  echo "Creating backup dir $BACKUP_DIR"
+  mkdir -p $BACKUP_DIR
 fi
 
 setup_zsh_config
