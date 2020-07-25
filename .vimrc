@@ -17,6 +17,26 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 call plug#end()
 
+" Coc.nvim
+let g:coc_global_extensions = [ 'coc-html', 'coc-json', 'coc-omnisharp', 'coc-python', 'coc-ccls', 'coc-rls', 'coc-sh', 'coc-texlab', 'coc-tsserver', 'coc-xml']
+" Better display for messages
+set cmdheight=2
+" Smaller updatetime for CursorHold & CursorHoldI
+set updatetime=300
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+" always show signcolumns
+set signcolumn=yes
+" use <tab> for trigger completion and navigate to the next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
+
 
 " Color scheme
 let g:gruvbox_contrast_dark = 'hard'
