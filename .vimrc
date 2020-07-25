@@ -18,7 +18,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
 " Coc.nvim
-let g:coc_global_extensions = [ 'coc-html', 'coc-json', 'coc-omnisharp', 'coc-python', 'coc-ccls', 'coc-rls', 'coc-sh', 'coc-texlab', 'coc-tsserver', 'coc-xml']
+let g:coc_global_extensions = [ 'coc-html', 'coc-json', 'coc-omnisharp', 'coc-python', 'coc-rls', 'coc-sh', 'coc-texlab', 'coc-tsserver', 'coc-xml']
 " Better display for messages
 set cmdheight=2
 " Smaller updatetime for CursorHold & CursorHoldI
@@ -36,6 +36,9 @@ inoremap <silent><expr> <Tab>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<Tab>" :
       \ coc#refresh()
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
 
 " Color scheme
